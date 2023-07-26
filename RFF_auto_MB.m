@@ -74,14 +74,14 @@ for ii = starti:file_count
     off_reject_flag = 0;
     on_reject_flag = 0;
     
-    % Check if the number of 'off' pulses is less than 15
-    if length(off_pulses) < 15
+    % Check if the number of 'off' pulses is less than 11
+    if length(off_pulses) < 11
         off_reject_flag = 1;
         off_reject = 'not enough pulses';
     end
     
-    % Check if the number of 'on' pulses is less than 15
-    if length(on_pulses) < 15
+    % Check if the number of 'on' pulses is less than 11
+    if length(on_pulses) < 11
         on_reject_flag = 1;
         on_reject = 'not enough pulses';
     end
@@ -111,7 +111,7 @@ for ii = starti:file_count
             case 1
                 % Step 1: Check for vocal fry based on the median f0 in the 'off' region.
                 
-                off_f0 = f0(f0Loc./Fs < fricLoc & f0Loc./Fs > off_pulses(end-15)); % Extract f0 values during the 'off' region.
+                off_f0 = f0(f0Loc./Fs < fricLoc & f0Loc./Fs > off_pulses(end-11)); % Extract f0 values during the 'off' region.
                 
                 if median(off_f0) < 100
                     % If the median f0 is below 100 Hz, reject due to vocal fry.
@@ -151,7 +151,7 @@ for ii = starti:file_count
             case 4
                 % Step 4: Check for outliers in other 'off' pulse periods.
                 
-                if sum(off_T(end-13:end) > prctile(off_T(end-13:end), 65) * 1.5) > 0
+                if sum(off_T(end-9:end) > prctile(off_T(end-9:end), 65) * 1.5) > 0
                     % If any 'off' pulse periods contain an outlier, reject due to outlier periods.
                     off_reject_flag = 1;
                     off_reject = 'other onset periods contain an outlier';
@@ -194,7 +194,7 @@ for ii = starti:file_count
             case 1
                 % Step 1: Check for vocal fry based on the median f0 in the 'on' region.
                 
-                on_f0 = f0(f0Loc./Fs > fricLoc & f0Loc./Fs < on_pulses(15)); % Extract f0 values during the 'on' region.
+                on_f0 = f0(f0Loc./Fs > fricLoc & f0Loc./Fs < on_pulses(11)); % Extract f0 values during the 'on' region.
                 
                 if median(on_f0) < 100 && on_reject_flag == 0
                     % If the median f0 is below 100 Hz and no previous rejection, reject due to vocal fry.
@@ -234,7 +234,7 @@ for ii = starti:file_count
             case 4
                 % Step 4: Check for outliers in other 'on' pulse periods.
                 
-                if sum(on_T(2:14) > prctile(on_T(1:14), 65) * 1.5) > 0
+                if sum(on_T(2:10) > prctile(on_T(1:10), 65) * 1.5) > 0
                     % If any 'on' pulse periods contain an outlier, reject due to outlier periods.
                     on_reject_flag = 1;
                     on_reject = 'other onset periods contain an outlier';
